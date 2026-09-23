@@ -537,15 +537,6 @@
         <label class="g-label" for="gName">Your Name</label>
         <input class="g-input" id="gName" type="text" maxlength="60" placeholder="What is your name?">
 
-        <span class="g-label">Your Relationship to the Couple</span>
-        <div class="chips" id="chips">
-          <button type="button" class="chip" data-v="Family">Family</button>
-          <button type="button" class="chip" data-v="Friend">Friend</button>
-          <button type="button" class="chip" data-v="Colleague">Colleague</button>
-          <button type="button" class="chip" data-v="Neighbor">Neighbor</button>
-          <button type="button" class="chip" data-v="Relative">Relative</button>
-        </div>
-
         <label class="g-label" for="gMsg">Your Message</label>
         <textarea class="g-text" id="gMsg" maxlength="600" placeholder="Write your heartfelt congratulations..."></textarea>
 
@@ -653,14 +644,6 @@
     const gSend = document.getElementById('gSend');
     const gStatus = document.getElementById('gStatus');
     const gList = document.getElementById('gList');
-    const chips = Array.from(document.querySelectorAll('.chip'));
-    let relation = '';
-
-    chips.forEach(c => c.addEventListener('click', () => {
-      const same = c.classList.contains('active');
-      chips.forEach(x => x.classList.remove('active'));
-      if (same) { relation = ''; } else { c.classList.add('active'); relation = c.dataset.v; }
-    }));
 
     function renderMessages(list) {
       gList.innerHTML = '';
@@ -731,13 +714,12 @@
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ name, relation, message })
+          body: JSON.stringify({ name, message })
         });
         const empty = gList.querySelector('.g-empty');
         if (empty) empty.remove();
-        gList.prepend(buildMsg({ name, relation, message, date: new Date().toISOString() }));
-        gName.value = ''; gMsg.value = ''; relation = '';
-        chips.forEach(x => x.classList.remove('active'));
+        gList.prepend(buildMsg({ name, message, date: new Date().toISOString() }));
+        gName.value = ''; gMsg.value = '';
         gStatus.textContent = 'Thank you! Your message was sent.';
       } catch (e) {
         gStatus.textContent = 'Something went wrong, please try again.';
