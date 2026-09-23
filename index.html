@@ -32,17 +32,6 @@
       font-family: 'Cormorant Garamond', serif;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --paper: #2a2620; --ink: #e8dfd0;
-        --line: #c39d6b; --line-soft: #a9865a; --gold: #d9c568; --mark: #e8dfd0;
-      }
-    }
-    :root[data-theme="dark"] {
-      --paper: #2a2620; --ink: #e8dfd0;
-      --line: #c39d6b; --line-soft: #a9865a; --gold: #d9c568; --mark: #e8dfd0;
-    }
-
     .scroller {
       height: 100%;
       overflow-y: auto;
@@ -363,6 +352,88 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
+
+    /* Guestbook section */
+    section.guest-panel { justify-content: flex-start; padding: 14% 6% 10%; }
+    .g-title {
+      font-family: 'Cinzel', serif; font-weight: 600;
+      font-size: clamp(22px, 4vw, 32px); letter-spacing: 0.1em;
+      color: var(--gold); margin: 0; line-height: 1.4;
+    }
+    .g-sub {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: clamp(17px, 2.4vw, 21px); color: var(--line);
+      margin: 2% 0 6%;
+    }
+    .g-card {
+      width: 100%; max-width: 520px; text-align: left;
+      background: rgba(255, 253, 246, 0.55);
+      border: 1.5px dashed var(--line); border-radius: 14px;
+      padding: 26px 24px 28px; backdrop-filter: blur(2px);
+    }
+    .g-label {
+      display: block; margin: 20px 0 8px;
+      font-family: 'Cinzel', serif; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+    }
+    .g-label:first-child { margin-top: 0; }
+    .g-input, .g-text {
+      width: 100%; font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; color: var(--ink);
+      background: rgba(210, 170, 160, 0.12);
+      border: 1px solid var(--line-soft); border-radius: 10px;
+      padding: 12px 14px; outline: none;
+    }
+    .g-input:focus, .g-text:focus { border-color: var(--gold); }
+    .g-input::placeholder, .g-text::placeholder { color: var(--line); opacity: .8; }
+    .g-text { min-height: 120px; resize: vertical; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      font-family: 'Cormorant Garamond', serif; font-size: 17px;
+      color: var(--ink); background: transparent;
+      border: 1px solid var(--line-soft); border-radius: 999px;
+      padding: 7px 16px; cursor: pointer; transition: all .2s;
+    }
+    .chip.active { background: var(--gold); color: var(--paper); border-color: var(--gold); }
+    .g-send {
+      width: 100%; margin-top: 24px; cursor: pointer;
+      font-family: 'Cinzel', serif; font-weight: 600; font-size: 13px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--paper); background: var(--gold);
+      border: none; border-radius: 10px; padding: 16px;
+    }
+    .g-send:disabled { opacity: .6; cursor: default; }
+    .g-status {
+      min-height: 22px; margin: 12px 0 0; text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 17px; color: var(--gold);
+    }
+    .g-list-title {
+      font-family: 'Cinzel', serif; font-weight: 600; letter-spacing: 0.14em;
+      font-size: clamp(16px, 2.6vw, 20px); color: var(--gold);
+      margin: 9% 0 4%;
+    }
+    .g-list { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 14px; text-align: left; }
+    .g-msg {
+      background: rgba(255, 253, 246, 0.5);
+      border: 1px solid var(--line-soft); border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .g-msg .who {
+      font-family: 'Cinzel', serif; font-weight: 600; font-size: 14px;
+      letter-spacing: 0.08em; color: var(--gold);
+    }
+    .g-msg .rel {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 15px; color: var(--line); margin-left: 8px;
+    }
+    .g-msg .txt {
+      font-family: 'Cormorant Garamond', serif; font-size: 19px;
+      line-height: 1.5; color: var(--ink); margin: 8px 0 0;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .g-msg .when { font-size: 13px; color: var(--line); margin-top: 8px; }
+    .g-empty { text-align: center; font-style: italic; color: var(--line); font-size: 18px; }
   </style>
 </head>
 
@@ -378,6 +449,7 @@
     <button class="dot active" data-i="0" aria-label="Section 1"></button>
     <button class="dot" data-i="1" aria-label="Section 2"></button>
     <button class="dot" data-i="2" aria-label="Section 3"></button>
+    <button class="dot" data-i="3" aria-label="Section 4"></button>
   </div>
 
   <!-- <img class="flowers-frame" src="./assets/flowers.png" alt=""> -->
@@ -457,6 +529,34 @@
       </div>
     </section>
 
+    <section class="panel guest-panel" id="s3">
+      <h2 class="g-title">Leave a Message<br>for the Couple</h2>
+      <p class="g-sub">Your words are the most precious gift to Aliaa &amp; Mohamed</p>
+
+      <div class="g-card">
+        <label class="g-label" for="gName">Your Name</label>
+        <input class="g-input" id="gName" type="text" maxlength="60" placeholder="What is your name?">
+
+        <span class="g-label">Your Relationship to the Couple</span>
+        <div class="chips" id="chips">
+          <button type="button" class="chip" data-v="Family">Family</button>
+          <button type="button" class="chip" data-v="Friend">Friend</button>
+          <button type="button" class="chip" data-v="Colleague">Colleague</button>
+          <button type="button" class="chip" data-v="Neighbor">Neighbor</button>
+          <button type="button" class="chip" data-v="Relative">Relative</button>
+        </div>
+
+        <label class="g-label" for="gMsg">Your Message</label>
+        <textarea class="g-text" id="gMsg" maxlength="600" placeholder="Write your heartfelt congratulations..."></textarea>
+
+        <button type="button" class="g-send" id="gSend">Send Your Congratulations</button>
+        <p class="g-status" id="gStatus"></p>
+      </div>
+
+      <h3 class="g-list-title">Messages</h3>
+      <div class="g-list" id="gList"><p class="g-empty">Loading messages...</p></div>
+    </section>
+
   </div>
 
   <script>
@@ -476,7 +576,7 @@
           dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
         }
       });
-    }, { root: scroller, threshold: 0.6 });
+    }, { root: scroller, threshold: 0.25 });
 
     sections.forEach(s => observer.observe(s));
 
@@ -545,6 +645,107 @@
         playMusic();
       }
     });
+    // ===== Guestbook (saves to Google Sheets, shows messages below) =====
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyBwAjibYALJkDJveA__MPDRL6lsMEf3-u7P0Gd3zJo9SbDCaqs_oTRY06NkQiM4X4f/exec';
+
+    const gName = document.getElementById('gName');
+    const gMsg = document.getElementById('gMsg');
+    const gSend = document.getElementById('gSend');
+    const gStatus = document.getElementById('gStatus');
+    const gList = document.getElementById('gList');
+    const chips = Array.from(document.querySelectorAll('.chip'));
+    let relation = '';
+
+    chips.forEach(c => c.addEventListener('click', () => {
+      const same = c.classList.contains('active');
+      chips.forEach(x => x.classList.remove('active'));
+      if (same) { relation = ''; } else { c.classList.add('active'); relation = c.dataset.v; }
+    }));
+
+    function renderMessages(list) {
+      gList.innerHTML = '';
+      if (!list.length) {
+        const p = document.createElement('p');
+        p.className = 'g-empty';
+        p.textContent = 'Be the first to leave a message.';
+        gList.appendChild(p);
+        return;
+      }
+      list.forEach(m => gList.appendChild(buildMsg(m)));
+    }
+
+    function buildMsg(m) {
+      const el = document.createElement('div');
+      el.className = 'g-msg';
+      const head = document.createElement('div');
+      const who = document.createElement('span');
+      who.className = 'who'; who.textContent = m.name || '';
+      head.appendChild(who);
+      if (m.relation) {
+        const rel = document.createElement('span');
+        rel.className = 'rel'; rel.textContent = '· ' + m.relation;
+        head.appendChild(rel);
+      }
+      const txt = document.createElement('p');
+      txt.className = 'txt'; txt.setAttribute('dir', 'auto');
+      txt.textContent = m.message || '';
+      el.appendChild(head); el.appendChild(txt);
+      const d = new Date(m.date);
+      if (!isNaN(d)) {
+        const when = document.createElement('div');
+        when.className = 'when';
+        when.textContent = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+        el.appendChild(when);
+      }
+      return el;
+    }
+
+    async function loadMessages() {
+      if (SHEET_URL.indexOf('PASTE_') === 0) {
+        gList.innerHTML = '<p class="g-empty">Messages will appear here.</p>';
+        return;
+      }
+      try {
+        const r = await fetch(SHEET_URL);
+        renderMessages(await r.json());
+      } catch (e) {
+        gList.innerHTML = '<p class="g-empty">Could not load messages right now.</p>';
+      }
+    }
+
+    gSend.addEventListener('click', async () => {
+      const name = gName.value.trim();
+      const message = gMsg.value.trim();
+      if (!name || !message) {
+        gStatus.textContent = 'Please write your name and message.';
+        return;
+      }
+      if (SHEET_URL.indexOf('PASTE_') === 0) {
+        gStatus.textContent = 'Not connected to the sheet yet.';
+        return;
+      }
+      gSend.disabled = true;
+      gStatus.textContent = 'Sending...';
+      try {
+        await fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ name, relation, message })
+        });
+        const empty = gList.querySelector('.g-empty');
+        if (empty) empty.remove();
+        gList.prepend(buildMsg({ name, relation, message, date: new Date().toISOString() }));
+        gName.value = ''; gMsg.value = ''; relation = '';
+        chips.forEach(x => x.classList.remove('active'));
+        gStatus.textContent = 'Thank you! Your message was sent.';
+      } catch (e) {
+        gStatus.textContent = 'Something went wrong, please try again.';
+      }
+      gSend.disabled = false;
+    });
+
+    loadMessages();
   </script>
 
 </body>
