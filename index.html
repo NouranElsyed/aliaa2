@@ -67,6 +67,26 @@
       padding: 12% 8%;
     }
 
+    .sound-toggle {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      background: rgba(255, 253, 246, 0.75);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      backdrop-filter: blur(2px);
+      transition: opacity .2s;
+    }
+    .sound-toggle svg { width: 20px; height: 20px; }
+
     .flowers-frame {
       position: fixed;
       inset: 0;
@@ -304,6 +324,13 @@
     <button class="dot" data-i="2" aria-label="Section 3"></button>
   </div>
 
+  <!-- <img class="flowers-frame" src="./assets/flowers.png" alt=""> -->
+
+  <button class="sound-toggle" id="soundToggle" aria-label="Toggle music">
+    <svg id="iconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>
+    <svg id="iconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>
+  </button>
+  <audio id="bgMusic" src="./assets/music.mp3" loop></audio>
 
   <div class="scroller" id="scroller">
 
@@ -424,6 +451,44 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // Background music toggle
+    const bgMusic = document.getElementById('bgMusic');
+    const soundToggle = document.getElementById('soundToggle');
+    const iconOn = document.getElementById('iconOn');
+    const iconOff = document.getElementById('iconOff');
+    let musicPlaying = false;
+
+    function playMusic() {
+      bgMusic.play().then(() => {
+        musicPlaying = true;
+        iconOn.style.display = '';
+        iconOff.style.display = 'none';
+      }).catch(() => {
+        musicPlaying = false;
+        iconOn.style.display = 'none';
+        iconOff.style.display = '';
+      });
+    }
+
+    // Try to autoplay; browsers may block until first user interaction
+    playMusic();
+    document.addEventListener('click', function firstInteract() {
+      if (!musicPlaying) playMusic();
+      document.removeEventListener('click', firstInteract);
+    }, { once: true });
+
+    soundToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicPlaying = false;
+        iconOn.style.display = 'none';
+        iconOff.style.display = '';
+      } else {
+        playMusic();
+      }
+    });
   </script>
 
 </body>
