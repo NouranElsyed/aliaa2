@@ -459,17 +459,17 @@
     const iconOff = document.getElementById('iconOff');
     let musicPlaying = false;
 
-    function playMusic() {
-      bgMusic.play().then(() => {
-        musicPlaying = true;
-        iconOn.style.display = '';
-        iconOff.style.display = 'none';
-      }).catch(() => {
-        musicPlaying = false;
-        iconOn.style.display = 'none';
-        iconOff.style.display = '';
-      });
-    }
+function playMusic() {
+  bgMusic.play().then(() => {
+    musicPlaying = true;
+    iconOn.style.display = '';
+    iconOff.style.display = 'none';
+  }).catch(() => {
+    musicPlaying = false;
+    iconOn.style.display = 'none';
+    iconOff.style.display = '';
+  });
+}
 
     // Try to autoplay; browsers may block until first user interaction
  // Try to autoplay; browsers may block until first user interaction
