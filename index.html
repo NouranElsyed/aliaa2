@@ -56,7 +56,7 @@
       width: 100%;
       scroll-snap-align: start;
       background-color: var(--paper);
-       background-image: url('./assets/bg.png');
+       background-image: url('./assets/base-bg.png');
       background-size: cover;
       background-position: center;
       display: flex;
@@ -324,13 +324,13 @@
     <button class="dot" data-i="2" aria-label="Section 3"></button>
   </div>
 
-  <!-- <img class="flowers-frame" src="./assets/flowers.png" alt=""> -->
+  <img class="flowers-frame" src="./assets/flowers.png" alt="">
 
   <button class="sound-toggle" id="soundToggle" aria-label="Toggle music">
     <svg id="iconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>
     <svg id="iconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>
   </button>
-  <audio id="bgMusic" src="./assets/music.mp3" loop></audio>
+  <audio id="bgMusic" src="./assets/music.mp3" loop preload="auto"></audio>
 
   <div class="scroller" id="scroller">
 
@@ -457,9 +457,27 @@
     const soundToggle = document.getElementById('soundToggle');
     const iconOn = document.getElementById('iconOn');
     const iconOff = document.getElementById('iconOff');
-    let musicPlaying = true;
+    let musicPlaying = false;
+    bgMusic.volume = 1.0;
+
+    // Boost loudness beyond the normal 0–1 ceiling using Web Audio API
+    let audioBoosted = false;
+    function boostVolume() {
+      if (audioBoosted) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const source = ctx.createMediaElementSource(bgMusic);
+        const gainNode = ctx.createGain();
+        gainNode.gain.value = 1.8; // louder than default max
+        source.connect(gainNode).connect(ctx.destination);
+        if (ctx.state === 'suspended') ctx.resume();
+        audioBoosted = true;
+      } catch (e) { /* fall back to normal volume silently */ }
+    }
 
     function playMusic() {
+      boostVolume();
       bgMusic.play().then(() => {
         musicPlaying = true;
         iconOn.style.display = '';
@@ -471,12 +489,15 @@
       });
     }
 
-    // Try to autoplay; browsers may block until first user interaction
+    // Try to autoplay immediately; if the browser blocks it, catch the
+    // very first user interaction of ANY kind (tap, scroll, key) and
+    // start the music right then, so it feels automatic.
     playMusic();
-    document.addEventListener('click', function firstInteract() {
-      if (!musicPlaying) playMusic();
-      document.removeEventListener('click', firstInteract);
-    }, { once: true });
+    ['click', 'touchstart', 'scroll', 'keydown', 'wheel'].forEach(evt => {
+      document.addEventListener(evt, function firstInteract() {
+        if (!musicPlaying) playMusic();
+      }, { once: true, passive: true });
+    });
 
     soundToggle.addEventListener('click', (e) => {
       e.stopPropagation();
