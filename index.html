@@ -56,7 +56,7 @@
       width: 100%;
       scroll-snap-align: start;
       background-color: var(--paper);
-       background-image: url('./assets/bg.png');
+      background-image: url('./assets/bg.png');
       background-size: cover;
       background-position: center;
       display: flex;
@@ -313,10 +313,66 @@
       0%, 100% { transform: translate(-50%, 0); }
       50% { transform: translate(-50%, 6px); }
     }
+
+    /* Welcome / open-invitation screen */
+    .welcome {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background-color: var(--paper);
+      background-image: url('./assets/bg.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8%;
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+    .welcome.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .welcome .w-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(12px, 2.2vw, 15px);
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      margin: 0 0 4%;
+    }
+    .welcome .w-names {
+      font-family: 'Alex Brush', cursive;
+      font-size: clamp(44px, 9vw, 76px);
+      color: var(--gold);
+      line-height: 1.15;
+      margin: 0 0 8%;
+    }
+    .open-btn {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: clamp(13px, 2vw, 16px);
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      background: rgba(210, 170, 160, 0.12);
+      border: 1.5px dashed var(--line);
+      border-radius: 10px;
+      padding: 14px 34px;
+      cursor: pointer;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
   </style>
 </head>
 
 <body>
+
+  <div class="welcome" id="welcome">
+    <p class="w-eyebrow">YOU ARE INVITED</p>
+    <p class="w-names">Aliaa &amp; Mohamed</p>
+    <button class="open-btn" id="openBtn">OPEN INVITATION</button>
+  </div>
 
   <div class="dots" id="dots">
     <button class="dot active" data-i="0" aria-label="Section 1"></button>
@@ -327,8 +383,8 @@
   <!-- <img class="flowers-frame" src="./assets/flowers.png" alt=""> -->
 
   <button class="sound-toggle" id="soundToggle" aria-label="Toggle music">
-    <svg id="iconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>
-    <svg id="iconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>
+    <svg id="iconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>
+    <svg id="iconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15" fill="currentColor" stroke="none"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>
   </button>
   <audio id="bgMusic" src="./assets/music.mp3" loop></audio>
 
@@ -459,35 +515,24 @@
     const iconOff = document.getElementById('iconOff');
     let musicPlaying = false;
 
-function playMusic() {
-  bgMusic.play().then(() => {
-    musicPlaying = true;
-    iconOn.style.display = '';
-    iconOff.style.display = 'none';
-  }).catch(() => {
-    musicPlaying = false;
-    iconOn.style.display = 'none';
-    iconOff.style.display = '';
-  });
-}
+    function playMusic() {
+      bgMusic.play().then(() => {
+        musicPlaying = true;
+        iconOn.style.display = '';
+        iconOff.style.display = 'none';
+      }).catch(() => {
+        musicPlaying = false;
+        iconOn.style.display = 'none';
+        iconOff.style.display = '';
+      });
+    }
 
-    // Try to autoplay; browsers may block until first user interaction
- // Try to autoplay; browsers may block until first user interaction
-playMusic();
-
-// أول تفاعل من الزائر (أي نوع) يشغّل الموسيقى
-const unlockEvents = ['click', 'touchstart', 'touchend', 'wheel', 'keydown', 'scroll', 'pointerdown'];
-function firstInteract() {
-  if (!musicPlaying) playMusic();
-  unlockEvents.forEach(ev => {
-    document.removeEventListener(ev, firstInteract, true);
-    scroller.removeEventListener(ev, firstInteract);
-  });
-}
-unlockEvents.forEach(ev => {
-  document.addEventListener(ev, firstInteract, { capture: true, passive: true });
-  scroller.addEventListener(ev, firstInteract, { passive: true });
-});
+    // Open invitation button: a click is an allowed user gesture => music starts
+    const welcome = document.getElementById('welcome');
+    document.getElementById('openBtn').addEventListener('click', () => {
+      playMusic();
+      welcome.classList.add('hide');
+    });
 
     soundToggle.addEventListener('click', (e) => {
       e.stopPropagation();
