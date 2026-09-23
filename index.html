@@ -472,11 +472,22 @@
     }
 
     // Try to autoplay; browsers may block until first user interaction
-    playMusic();
-    document.addEventListener('click', function firstInteract() {
-      if (!musicPlaying) playMusic();
-      document.removeEventListener('click', firstInteract);
-    }, { once: true });
+ // Try to autoplay; browsers may block until first user interaction
+playMusic();
+
+// أول تفاعل من الزائر (أي نوع) يشغّل الموسيقى
+const unlockEvents = ['click', 'touchstart', 'touchend', 'wheel', 'keydown', 'scroll', 'pointerdown'];
+function firstInteract() {
+  if (!musicPlaying) playMusic();
+  unlockEvents.forEach(ev => {
+    document.removeEventListener(ev, firstInteract, true);
+    scroller.removeEventListener(ev, firstInteract);
+  });
+}
+unlockEvents.forEach(ev => {
+  document.addEventListener(ev, firstInteract, { capture: true, passive: true });
+  scroller.addEventListener(ev, firstInteract, { passive: true });
+});
 
     soundToggle.addEventListener('click', (e) => {
       e.stopPropagation();
